@@ -1,58 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dindigul Vegetable Price</title>
+  <meta charset="UTF-8">
 
+  <title>Dindigul Vegetable Price Prediction</title>
+
+  <!-- Mobile responsiveness -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- PWA -->
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#2e7d32">
 
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
+      background: #f4f6f5;
     }
+
+    h2 {
+      color: #2e7d32;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 200px;
+    }
+
     button {
-      padding: 10px 20px;
+      padding: 12px 25px;
+      font-size: 16px;
       background: #2e7d32;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
     }
   </style>
 </head>
 
 <body>
-  <h2>🥦 Dindigul Vegetable Price</h2>
 
-  <input type="date" id="date"><br><br>
+  <h2>🥦 Dindigul Vegetable Price Prediction</h2>
+
+  <input type="date" id="date">
+  <br><br>
+
   <button onclick="predict()">Predict Tomorrow Price</button>
 
   <h3 id="result"></h3>
 
-<script>
-function predict() {
-  fetch("/predict", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      date: document.getElementById("date").value
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("result").innerHTML =
-      `Retail Min: ₹${data.retail_min}<br>Retail Max: ₹${data.retail_max}`;
-  });
-}
-</script>
+  <!-- Prediction Script -->
+  <script>
+    function predict() {
+      const date = document.getElementById("date").value;
 
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/static/service-worker.js");
-}
-</script>
+      if (!date) {
+        alert("Please select a date");
+        return;
+      }
+
+      fetch("/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ date: date })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("result").innerHTML =
+          `Retail Min Price: ₹${data.retail_min} <br>
+           Retail Max Price: ₹${data.retail_max}`;
+      })
+      .catch(error => {
+        document.getElementById("result").innerHTML =
+          "❌ Error predicting price";
+        console.error(error);
+      });
+    }
+  </script>
+
+  <!-- Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/static/service-worker.js")
+          .then(() => console.log("Service Worker Registered"))
+          .catch(err => console.log("Service Worker Error:", err));
+      });
+    }
+  </script>
 
 </body>
 </html>
