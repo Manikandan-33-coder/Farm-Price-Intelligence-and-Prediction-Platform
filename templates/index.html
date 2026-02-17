@@ -61,6 +61,12 @@
 
 
   <input type="date" id="date">
+  <script>
+  const dateInput = document.getElementById("date");
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.min = today;   // disables past dates
+</script>
+
   <br><br>
 
   <button onclick="predict()">Check Upcoming Market Prices</button>
@@ -114,5 +120,6 @@ Select any upcoming market date to compare prices and decide the best day to sel
 
 </body>
 </html>
+
 
 
