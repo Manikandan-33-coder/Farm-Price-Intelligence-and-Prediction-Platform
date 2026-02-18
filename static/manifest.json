@@ -9,8 +9,8 @@
   "description": "Smart Vegetable Price Forecast is an AI-powered web application designed for farmers in Dindigul to make informed decisions about selling their produce. Users can select a future date and the quantity of vegetables, and the app predicts the minimum and maximum retail prices, providing an estimated earning range. Additionally, it gives market advice in Tamil and a prediction confidence level, helping farmers choose the best day to sell for maximum profit.",
   "icons": [
     {
-      "src": "/static/icon-192.png",
-      "sizes": "192x192",
+      "src": "/static/icon.png",
+      "sizes": ""1024x1024"",
       "type": "image/png"
     },
     {
@@ -37,4 +37,5 @@
     }
   ]
 }
+
 
