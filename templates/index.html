@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
   <title>Dindigul Vegetable Price Prediction</title>
 
-  <!-- Mobile responsiveness -->
+  <!-- Mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- PWA -->
@@ -22,23 +21,31 @@
 
     h2 {
       color: #2e7d32;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #555;
     }
 
     input {
       padding: 10px;
       font-size: 16px;
       margin: 10px 0;
-      width: 200px;
+      width: 220px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
 
     button {
-      padding: 12px 25px;
+      padding: 12px 30px;
       font-size: 16px;
       background: #2e7d32;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -46,58 +53,77 @@
     }
 
     #result {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #333;
+      margin-top: 25px;
+      font-size: 17px;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: inline-block;
+      min-width: 260px;
     }
   </style>
 </head>
 
 <body>
 
-
   <h2>🥦 Smart Vegetable Price Forecast for Dindigul Markets</h2>
-<p>AI-powered insights to help farmers choose the best market day</p>
+  <p>AI-powered insights to help farmers choose the best market day</p>
 
-
+  <!-- Date -->
   <input type="date" id="date">
-  <script>
-  const dateInput = document.getElementById("date");
-  const today = new Date().toISOString().split("T")[0];
-  dateInput.min = today;   // disables past dates
-</script>
 
-  <br><br>
+  <!-- Disable past dates -->
+  <script>
+    const dateInput = document.getElementById("date");
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.min = today;
+  </script>
+
+  <br>
+
+  <!-- Quantity -->
+  <input type="number" id="quantity" placeholder="Enter quantity (kg)" min="1">
+
+  <br>
 
   <button onclick="predict()">Check Upcoming Market Prices</button>
-  <p>
-Select any upcoming market date to compare prices and decide the best day to sell.
-</p>
 
-<h3 id="result"></h3>
+  <p>Select a future market date and quantity to estimate earnings.</p>
+
+  <div id="result"></div>
 
   <!-- Prediction Script -->
   <script>
     function predict() {
       const date = document.getElementById("date").value;
+      const quantity = document.getElementById("quantity").value;
 
-      if (!date) {
-        alert("Please select a date");
+      if (!date || !quantity) {
+        alert("Please select date and enter quantity");
         return;
       }
 
       fetch("/predict", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date: date })
       })
       .then(response => response.json())
       .then(data => {
-        document.getElementById("result").innerHTML =
-          `Retail Min Price: ₹${data.retail_min} <br>
-           Retail Max Price: ₹${data.retail_max}`;
+        const minPrice = data.retail_min;
+        const maxPrice = data.retail_max;
+
+        const minEarning = (quantity * minPrice).toFixed(2);
+        const maxEarning = (quantity * maxPrice).toFixed(2);
+
+        document.getElementById("result").innerHTML = `
+          <b>Predicted Prices</b><br><br>
+          Retail Min Price: ₹${minPrice}<br>
+          Retail Max Price: ₹${maxPrice}<br><br>
+          <b>Estimated Earnings (${quantity} kg)</b><br>
+          ₹${minEarning} – ₹${maxEarning}
+        `;
       })
       .catch(error => {
         document.getElementById("result").innerHTML =
@@ -111,15 +137,10 @@ Select any upcoming market date to compare prices and decide the best day to sel
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/static/service-worker.js")
-          .then(() => console.log("Service Worker Registered"))
-          .catch(err => console.log("Service Worker Error:", err));
+        navigator.serviceWorker.register("/static/service-worker.js");
       });
     }
   </script>
 
 </body>
 </html>
-
-
-
