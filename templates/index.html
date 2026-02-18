@@ -61,7 +61,7 @@
       padding: 18px;
       border-radius: 10px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      max-width: 320px;
+      max-width: 340px;
       margin-left: auto;
       margin-right: auto;
       line-height: 1.6;
@@ -75,6 +75,27 @@
     .advice-wait {
       color: #d84315;
       font-weight: bold;
+    }
+
+    .confidence-high {
+      color: green;
+      font-weight: bold;
+    }
+
+    .confidence-medium {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .confidence-low {
+      color: red;
+      font-weight: bold;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -129,6 +150,7 @@
         const minEarning = (quantity * minPrice).toFixed(2);
         const maxEarning = (quantity * maxPrice).toFixed(2);
 
+        /* 🧠 Market advice */
         let adviceText = "";
         let adviceClass = "";
 
@@ -138,6 +160,22 @@
         } else {
           adviceText = "⚠️ விலை குறைவு – இன்னும் காத்திருக்கலாம்";
           adviceClass = "advice-wait";
+        }
+
+        /* ✅ Confidence calculation */
+        const range = maxPrice - minPrice;
+        let confidenceText = "";
+        let confidenceClass = "";
+
+        if (range <= 4) {
+          confidenceText = "High confidence (≈ 85–90%)";
+          confidenceClass = "confidence-high";
+        } else if (range <= 7) {
+          confidenceText = "Medium confidence (≈ 70–80%)";
+          confidenceClass = "confidence-medium";
+        } else {
+          confidenceText = "Low confidence (≈ 60–65%)";
+          confidenceClass = "confidence-low";
         }
 
         document.getElementById("result").style.display = "block";
@@ -150,7 +188,15 @@
           ₹${minEarning} – ₹${maxEarning}<br><br>
 
           <b>🧑‍🌾 Market Advice</b><br>
-          <span class="${adviceClass}">${adviceText}</span>
+          <span class="${adviceClass}">${adviceText}</span><br><br>
+
+          <b>📈 Prediction Confidence</b><br>
+          <span class="${confidenceClass}">${confidenceText}</span>
+
+          <div class="note">
+            ⚠️ Prices are predicted using historical market data.<br>
+            ₹4–₹5 variation is normal due to demand, supply, and daily market changes.
+          </div>
         `;
       })
       .catch(error => {
