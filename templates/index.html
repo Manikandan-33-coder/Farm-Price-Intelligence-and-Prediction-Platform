@@ -12,56 +12,6 @@
   <meta name="theme-color" content="#2e7d32">
 
   <style>
-    #chatbot-icon {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #2e7d32;
-  color: white;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 999;
-}
-
-#chatbot-box {
-  display: none;
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  width: 260px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-  padding: 10px;
-  z-index: 999;
-}
-
-#chat-header {
-  font-weight: bold;
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-#chat-body {
-  height: 140px;
-  overflow-y: auto;
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-#chat-input {
-  width: 100%;
-  padding: 6px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
 
     body {
       font-family: Arial, sans-serif;
@@ -178,38 +128,7 @@
   <div id="result"></div>
 
   <!-- Prediction Script -->
-  <script>
-function toggleChat() {
-  const box = document.getElementById("chatbot-box");
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-document.getElementById("chat-input").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") sendChat();
-});
-
-function sendChat() {
-  const input = document.getElementById("chat-input");
-  const msg = input.value;
-  if (!msg) return;
-
-  const body = document.getElementById("chat-body");
-  body.innerHTML += `<div><b>You:</b> ${msg}</div>`;
-
-  fetch("/chatbot", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: msg })
-  })
-  .then(res => res.json())
-  .then(data => {
-    body.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
-    body.scrollTop = body.scrollHeight;
-  });
-
-  input.value = "";
-}
-</script>
+  
 
   <script>
     function predict() {
@@ -301,18 +220,10 @@ function sendChat() {
       });
     }
   </script>
-  <!-- Chatbot Floating Icon -->
-<div id="chatbot-icon" onclick="toggleChat()">🐱</div>
-
-<!-- Chatbot Window -->
-<div id="chatbot-box">
-  <div id="chat-header">🐱 Help Bot</div>
-  <div id="chat-body"></div>
-  <input type="text" id="chat-input" placeholder="How can I help?" />
-</div>
 
 
 </body>
 </html>
+
 
 
