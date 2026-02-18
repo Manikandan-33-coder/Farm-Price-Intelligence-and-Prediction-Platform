@@ -11,6 +11,27 @@ max_model = joblib.load("retail_max_model.pkl")
 # Example last known values (later replace with DB)
 LAST_LAG1 = 40
 LAST_LAG2 = 42
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    msg = request.json["message"].lower()
+
+    if "price" in msg:
+        reply = "Prices are predicted using historical Dindigul market data."
+
+    elif "accuracy" in msg:
+        reply = "₹4–₹5 variation is normal due to demand and supply."
+
+    elif "best day" in msg:
+        reply = "Choose days with higher predicted retail max price."
+
+    elif "how" in msg:
+        reply = "Select date, enter quantity, and check market price."
+
+    else:
+        reply = "Ask me about prices, accuracy, or how to use this app."
+
+    return jsonify({"reply": reply})
+
 
 @app.route("/")
 def home():
@@ -40,3 +61,4 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
