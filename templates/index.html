@@ -12,6 +12,48 @@
   <meta name="theme-color" content="#2e7d32">
 
   <style>
+    #chatbot-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #2e7d32;
+  color: white;
+  padding: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+#chatbot {
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 260px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 10px;
+}
+
+#bot-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#bot-body {
+  height: 150px;
+  overflow-y: auto;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+#bot-input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 5px;
+}
+
 
     body {
       font-family: Arial, sans-serif;
@@ -221,9 +263,51 @@
     }
   </script>
 
+<!-- Chatbot Button -->
+<div id="chatbot-btn" onclick="toggleBot()">💬</div>
+
+<!-- Chatbot Box -->
+<div id="chatbot">
+  <div id="bot-header">🤖 Help Bot</div>
+  <div id="bot-body"></div>
+
+  <input type="text" id="bot-input" placeholder="Ask me..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+  <script>
+function toggleBot() {
+  const bot = document.getElementById("chatbot");
+  bot.style.display = bot.style.display === "none" ? "block" : "none";
+}
+
+function sendMessage() {
+  const input = document.getElementById("bot-input");
+  const message = input.value;
+  if (!message) return;
+
+  const body = document.getElementById("bot-body");
+  body.innerHTML += `<div><b>You:</b> ${message}</div>`;
+
+  fetch("/chatbot", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: message })
+  })
+  .then(res => res.json())
+  .then(data => {
+    body.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
+    body.scrollTop = body.scrollHeight;
+  });
+
+  input.value = "";
+}
+</script>
+
 
 </body>
 </html>
+
 
 
 
