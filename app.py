@@ -15,6 +15,46 @@ LAST_LAG2 = 42
 def chatbot():
     msg = request.json["message"].lower()
 
+    # Example last predicted values (you can store real ones later)
+    last_min = 36
+    last_max = 41
+
+    if "price" in msg or "today" in msg:
+        reply = f"Today predicted price is ₹{last_min} – ₹{last_max} per kg."
+
+    elif "earn" in msg or "profit" in msg:
+        reply = "Enter quantity in main screen to see estimated earnings."
+
+    elif "best day" in msg or "sell" in msg:
+        if last_max >= 40:
+            reply = "Good price. You can take vegetables to market."
+        else:
+            reply = "Price is low. Waiting may give better returns."
+
+    elif "accuracy" in msg or "correct" in msg:
+        reply = "₹4–₹5 variation is normal due to market demand and supply."
+
+    elif "how" in msg or "use" in msg:
+        reply = "Select date → Enter quantity → Click Check Market Price."
+
+    elif "farmer" in msg:
+        reply = "This app is designed specially for Dindigul farmers."
+
+    else:
+        reply = (
+            "I can help with:\n"
+            "• Price info\n"
+            "• Earnings\n"
+            "• Best selling day\n"
+            "• Accuracy details"
+        )
+
+    return jsonify({"reply": reply})
+
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+    msg = request.json["message"].lower()
+
     if "price" in msg:
         reply = "Prices are predicted using historical Dindigul market data."
 
@@ -61,4 +101,5 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
