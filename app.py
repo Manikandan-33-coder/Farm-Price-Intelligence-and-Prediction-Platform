@@ -9,9 +9,10 @@ app = Flask(__name__)
 min_model = joblib.load("retail_min_model.pkl")
 max_model = joblib.load("retail_max_model.pkl")
 
-# Example last known values (later replace with DB)
+# Example lag values
 LAST_LAG1 = 40
 LAST_LAG2 = 42
+
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -28,7 +29,7 @@ def predict():
     input_df = pd.DataFrame([{
         "day": date.day,
         "month": date.month,
-        "week": date.isocalendar().week,
+        "week": int(date.isocalendar().week),
         "is_weekend": int(date.weekday() >= 5),
         "retail_avg_lag1": LAST_LAG1,
         "retail_avg_lag2": LAST_LAG2
@@ -43,49 +44,42 @@ def predict():
     })
 
 
-# ---------------- CHATBOT ----------------
+# ---------------- CHATBOT (ONLY ONCE) ----------------
 @app.route("/chatbot", methods=["POST"])
 def chatbot():
     msg = request.json.get("message", "").lower()
 
-    # Example last predicted values
     last_min = 36
     last_max = 41
 
     if "price" in msg or "today" in msg:
-        reply = f"Today predicted price is ₹{last_min} – ₹{last_max} per kg."
+        reply = f"Predicted price is ₹{last_min} – ₹{last_max} per kg."
 
     elif "earn" in msg or "profit" in msg:
         reply = "Enter quantity in the main screen to see estimated earnings."
 
     elif "best day" in msg or "sell" in msg:
-        if last_max >= 40:
-            reply = "Good price. You can take vegetables to the market."
-        else:
-            reply = "Price is low. Waiting may give better returns."
+        reply = "Higher retail max price days are better for selling."
 
-    elif "accuracy" in msg or "correct" in msg:
+    elif "accuracy" in msg:
         reply = "₹4–₹5 variation is normal due to market demand and supply."
 
-    elif "how" in msg or "use" in msg:
+    elif "how" in msg:
         reply = "Select date → Enter quantity → Click Check Market Price."
-
-    elif "farmer" in msg:
-        reply = "This app is designed specially for Dindigul farmers."
 
     else:
         reply = (
             "I can help with:\n"
-            "• Price information\n"
-            "• Earnings estimation\n"
+            "• Price info\n"
+            "• Earnings\n"
             "• Best selling day\n"
-            "• Accuracy explanation"
+            "• Accuracy details"
         )
 
     return jsonify({"reply": reply})
 
 
-# ---------------- RUN (RAILWAY SAFE) ----------------
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
