@@ -1,7 +1,7 @@
 {
   "name": "Dindigul Vegetable Price Prediction",
   "short_name": "Uzhavar Price",
-  "start_url": "/",
+  "start_url": "https://web-production-f0016.up.railway.app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2e7d32",
@@ -21,7 +21,7 @@
     },
     {
       "src": "/static/screenshots/home.png",
-      "sizes":"1080x1920",
+      "sizes": "1080x1920",
       "type": "image/png"
     },
     {
@@ -29,5 +29,6 @@
       "sizes": "1080x1920",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "Smart Vegetable Price Forecast is an AI-powered web application designed for farmers in Dindigul to make informed decisions about selling their produce. Users can select a future date and the quantity of vegetables, and the app predicts the minimum and maximum retail prices, providing an estimated earning range. Additionally, it gives market advice in Tamil and a prediction confidence level, helping farmers choose the best day to sell for maximum profit. The app uses historical market data and accounts for daily fluctuations in supply and demand."
 }
