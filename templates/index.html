@@ -26,24 +26,25 @@
 
     p {
       color: #555;
+      font-size: 14px;
     }
 
     input {
       padding: 10px;
       font-size: 16px;
       margin: 10px 0;
-      width: 220px;
-      border-radius: 5px;
+      width: 230px;
+      border-radius: 6px;
       border: 1px solid #ccc;
     }
 
     button {
-      padding: 12px 30px;
+      padding: 12px 32px;
       font-size: 16px;
       background: #2e7d32;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
     }
@@ -53,22 +54,35 @@
     }
 
     #result {
+      display: none;
       margin-top: 25px;
-      font-size: 17px;
+      font-size: 16px;
       background: #ffffff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: inline-block;
-      min-width: 260px;
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .advice-good {
+      color: green;
+      font-weight: bold;
+    }
+
+    .advice-wait {
+      color: #d84315;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <h2>🥦 Smart Vegetable Price Forecast for Dindigul Markets</h2>
-  <p>AI-powered insights to help farmers choose the best market day</p>
+  <h2>🥦 Smart Vegetable Price Forecast</h2>
+  <p>AI-powered guidance for Dindigul farmers to choose the best market day</p>
 
   <!-- Date -->
   <input type="date" id="date">
@@ -80,16 +94,14 @@
     dateInput.min = today;
   </script>
 
-  <br>
-
   <!-- Quantity -->
   <input type="number" id="quantity" placeholder="Enter quantity (kg)" min="1">
 
   <br>
 
-  <button onclick="predict()">Check Upcoming Market Prices</button>
+  <button onclick="predict()">Check Market Price</button>
 
-  <p>Select a future market date and quantity to estimate earnings.</p>
+  <p>Select an upcoming date and quantity to estimate your earnings.</p>
 
   <div id="result"></div>
 
@@ -117,17 +129,34 @@
         const minEarning = (quantity * minPrice).toFixed(2);
         const maxEarning = (quantity * maxPrice).toFixed(2);
 
+        let adviceText = "";
+        let adviceClass = "";
+
+        if (maxPrice >= 40) {
+          adviceText = "✅ நல்ல விலை – சந்தைக்கு கொண்டு செல்லலாம்";
+          adviceClass = "advice-good";
+        } else {
+          adviceText = "⚠️ விலை குறைவு – இன்னும் காத்திருக்கலாம்";
+          adviceClass = "advice-wait";
+        }
+
+        document.getElementById("result").style.display = "block";
         document.getElementById("result").innerHTML = `
-          <b>Predicted Prices</b><br><br>
-          Retail Min Price: ₹${minPrice}<br>
-          Retail Max Price: ₹${maxPrice}<br><br>
-          <b>Estimated Earnings (${quantity} kg)</b><br>
-          ₹${minEarning} – ₹${maxEarning}
+          <b>📊 Predicted Prices</b><br>
+          Retail Min: ₹${minPrice}<br>
+          Retail Max: ₹${maxPrice}<br><br>
+
+          <b>💰 Estimated Earnings (${quantity} kg)</b><br>
+          ₹${minEarning} – ₹${maxEarning}<br><br>
+
+          <b>🧑‍🌾 Market Advice</b><br>
+          <span class="${adviceClass}">${adviceText}</span>
         `;
       })
       .catch(error => {
+        document.getElementById("result").style.display = "block";
         document.getElementById("result").innerHTML =
-          "❌ Error predicting price";
+          "❌ Error predicting price. Please try again.";
         console.error(error);
       });
     }
@@ -137,7 +166,8 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/static/service-worker.js");
+        navigator.serviceWorker.register("/static/service-worker.js")
+          .then(() => console.log("Service Worker Registered"));
       });
     }
   </script>
